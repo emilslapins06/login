@@ -1,6 +1,8 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
     <link rel="stylesheet" href="style.css"/>
 </head>
@@ -17,34 +19,59 @@
                 <input type="password" id="password" placeholder="Enter Password" required>
             </div>
             <br>
-            <button type="submit" class="login-btn" onclick="handleLogin()">Login</button>
+            <button type="submit" class="login-btn">Login</button>
             <br><br>
             <button type="button" class="login-btn" onclick="handleRegister()">Register</button>
         </form>
     </div>
 
     <script>
-        function handleLogin(event) {
-            event.preventDefault(); 
-            const username = document.getElementById('username').value;
-            if (username.trim() === "") {
-                alert("Please enter a username");
-                return false;
-            }
-            showWelcomeScreen(username);
-        }
+        async function handleRegister() {
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value.trim();
 
-        function handleRegister() {
-            const username = document.getElementById('username').value;
-            if (username.trim() === "") {
-                alert("Please enter a username");
+            if (!username || !password) {
+                alert("Please enter both username and password.");
                 return;
             }
-            showWelcomeScreen(username);
+
+            const response = await fetch('http://localhost:5000/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password }),
+            });
+
+            const result = await response.json();
+            alert(result.message || result.error);
+        }
+
+        async function handleLogin(event) {
+            event.preventDefault();
+
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value.trim();
+
+            if (!username || !password) {
+                alert("Please enter both username and password.");
+                return false;
+            }
+
+            const response = await fetch('http://localhost:5000/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password }),
+            });
+
+            const result = await response.json();
+            if (response.ok) {
+                showWelcomeScreen(username);
+            } else {
+                alert(result.error);
+            }
         }
 
         function showWelcomeScreen(username) {
-            document.body.innerHTML = `<div class="welcome-screen"><h1>Hello, ${username}</h1></div>`;
+            document.body.innerHTML = `<div class="welcome-screen"><h1>Hello, ${username}!</h1></div>`;
         }
     </script>
 </body>
