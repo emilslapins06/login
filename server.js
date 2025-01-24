@@ -7,11 +7,10 @@ const app = express();
 const PORT = 5000;
 const DATA_FILE = './users.json';
 
-// Middleware
 app.use(cors());
 app.use(bodyParser.json());
 
-// Helper function to read user data
+// nolasa lietotāju datus
 const readUsers = () => {
   try {
     return JSON.parse(fs.readFileSync(DATA_FILE));
@@ -20,12 +19,12 @@ const readUsers = () => {
   }
 };
 
-// Helper function to write user data
+// lasa lietotāju datus
 const writeUsers = (users) => {
   fs.writeFileSync(DATA_FILE, JSON.stringify(users, null, 2));
 };
 
-// Register a new user
+// reģistrē jaunu lietotāju
 app.post('/register', (req, res) => {
   const { username, password } = req.body;
   let users = readUsers();
@@ -39,7 +38,7 @@ app.post('/register', (req, res) => {
   res.json({ message: 'Registration successful!' });
 });
 
-// Login user
+// logino jaunu lietotāju
 app.post('/login', (req, res) => {
   const { username, password } = req.body;
   let users = readUsers();
@@ -52,7 +51,7 @@ app.post('/login', (req, res) => {
   }
 });
 
-// Start server
+// sāk programmu
 app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`);
 });
